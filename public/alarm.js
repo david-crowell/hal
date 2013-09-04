@@ -35,7 +35,6 @@ Alarm.prototype.showTime = function(now) {
 }
 
 Alarm.prototype.isWakeTime = function(time) {
-	console.log("It's not: " + this.wakeHour + " : " + this.wakeMinute + " : " + this.wakeSecond + " it's actually " + time.getHours() + " : " + time.getMinutes() + " : " + time.getSeconds());
 	return (this.wakeHour == time.getHours() && this.wakeMinute == time.getMinutes() && this.wakeSecond == time.getSeconds());
 }
 
@@ -56,9 +55,16 @@ Alarm.prototype.getHhMmSsStringFromDateTime = function(time) {
 }
 
 Alarm.prototype.setWakeTime = function(hour, minute, second) {
-	this.wakeHour = hour;
-	this.wakeMinute = minute;
-	this.wakeSecond = second;
+	if (this.wakeHour != hour) {
+		this.wakeHour = hour;
+		this.hoursInput.value = hour;
+	} if (this.wakeMinute != minute) {
+		this.wakeMinute = minute;
+		this.minutesInput.value = minute;
+	} if (this.wakeSecond != second) {
+		this.wakeSecond = second;
+		this.secondsInput.value = second;
+	}
 }
 
 Alarm.prototype.everySecond = function() {

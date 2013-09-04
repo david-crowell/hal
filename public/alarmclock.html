@@ -5,12 +5,25 @@
 	<script type="text/javascript">	    		
 		var hal = new Hal();	
 
-		function startAlarm() {
-			window.open(document.getElementById('musicloc').value, 'alarm');
-		}
+		var Controller = {			
+			fireAlarm : function() {
+				window.open(document.getElementById('musicloc').value, 'alarm');
+			},
+			setAlarm : function(hours, minutes, seconds) {
+				console.log('got it up here');
+				this.alarm.setWakeTime(hours, minutes, seconds);
+			},
+			viewDidLoad : function() {
+				this.hal = new Hal(this);
+				this.hal.setWakeTimeCallback(this.setAlarm);
+				//this.hal.setWakeTime(function(){console.log('OH GUKC');});
+				this.alarm = new Alarm(this.fireAlarm, document.getElementById('currentTimeElement'), document.getElementById('wakeHoursInput'), document.getElementById('wakeMinutesInput'), document.getElementById('wakeSecondsInput'));
+				this.alarm.start();
+			}
+		};
 	</script>
 </head>
-<body>
+<body onload="Controller.viewDidLoad();">
 
 <button onclick="hal.start()">Click me</button>
 
@@ -23,12 +36,12 @@
 <input type="submit" value="Set Alarm!" id="submitbutton" /> <input type="reset" value="reset" id="resetbutton" />
 </div>
 </form>
-<script type="text/javascript">
+<!--script type="text/javascript">
 
 var alarm = new Alarm(startAlarm, document.getElementById('currentTimeElement'), document.getElementById('wakeHoursInput'), document.getElementById('wakeMinutesInput'), document.getElementById('wakeSecondsInput'));
 alarm.start();
 
-</script>
+</script-->
 
 </body>
 </html>
