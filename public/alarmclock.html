@@ -7,7 +7,9 @@
 
 		var Controller = {			
 			fireAlarm : function() {
-				window.open(document.getElementById('musicloc').value, 'alarm');
+				//window.open(document.getElementById('musicloc').value, 'alarm');
+				var snd = new Audio("http://www.palantir.net/2001/tma1/wav/zarathustra.wav"); // buffers automatically when created
+				snd.play();
 			},
 			setAlarm : function(hours, minutes, seconds) {
 				console.log('got it up here');
