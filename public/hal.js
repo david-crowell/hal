@@ -33,7 +33,7 @@ var Hal = function() {
 
 	function parseForCommand(text) {
 		text = trimBeginningSpaces(text);
-		if (startsWithHal(text)) {
+		if (startsWithName(text)) {
 			alert("Hal in: " + text);
 
 		} else {
@@ -41,11 +41,12 @@ var Hal = function() {
 		}
 	}
 
-	function startsWithHal(text) {
+	function startsWithName(text) {
 		var lower = text.toLowerCase();
 		var parts = lower.split(' ');
 		console.log(parts);
-		if (parts[0] == 'hal' || parts[0] == 'how') {
+		var matches = {'hal':1,'how':1,'jarvis':1,'viva':1};
+		if (parts[0] in matches) {
 			return true;	
 		} else {
 			return false;
