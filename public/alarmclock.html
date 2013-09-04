@@ -1,14 +1,14 @@
 <html>
 <head>
-	<script type="text/javascript">	    		
-
-	</script>
 	<script type="text/javascript" src="/alarm.js"></script>
 	<script type="text/javascript" src="/hal.js"></script>
+	<script type="text/javascript">	    		
+		var hal = new Hal();		
+	</script>
 </head>
 <body>
 
-<button onclick="start()">Click me</button>
+<button onclick="hal.start()">Click me</button>
 
 <form action="" method="">
 <div id="jsalarmclock">
@@ -20,7 +20,7 @@
 </div>
 </form>
 <script type="text/javascript">
-//jsalarm.init()
+
 var alarm = new Alarm(document.getElementById('currentTimeElement'),document.getElementById('wakeHoursInput'),document.getElementById('wakeMinutesInput'),document.getElementById('wakeSecondsInput'));
 alarm.start();
 
