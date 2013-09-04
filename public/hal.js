@@ -132,15 +132,17 @@ Hal.prototype.trySnoozeAlarm = function(text) {
 	console.log('snooze');
 	if (!(/snooze alarm/.test(text)) && !(/news alarm/.test(text))) return false;
 
+	console.log(text);
 	var minutes = 5;
 	if (/.* minute/.test(text)) {
 		var minutesParts = /.* minute/.exec(text)[0].split(' ');
 		console.log(minutesParts);
 		minutes = parseInt(this.fixNumberParsing(minutesParts[minutesParts.length - 2]));	
+		this.snoozeMinutesAwaitingConfirmation = minutes;
 		//alert(minutes);
 		this.confirmSnoozeMinutes(minutes, function(confirmed) {
 			if (confirmed) {
-				globalHal.snoozeForMinutes(minutes);
+				globalHal.snoozeForMinutes(globalHal.snoozeMinutesAwaitingConfirmation);
 				globalHal.controller.playAudio("http://www.palantir.net/2001/tma1/wav/decision.wav");
 			} else {
 				globalHal.controller.playAudio("http://www.palantir.net/2001/tma1/wav/cantdo.wav");
