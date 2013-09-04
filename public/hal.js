@@ -43,7 +43,10 @@ Hal.prototype.parseForCommand = function(text) {
 		this.trySetAlarmFor(text);
 		this.trySnoozeAlarm(text);
 	} else {
-		console.log("FAILS: " + text);
+		var savingThrow = this.tryGoodEvening(text);
+		if (!savingThrow) {
+			console.log("FAILS: " + text);
+		}
 	}
 }
 
@@ -197,6 +200,23 @@ Hal.prototype.tryStopAlarm = function(text) {
 		console.log(this);
 	}
 	return true;
+}
+
+Hal.prototype.tryGoodEvening = function(text) {
+	var patterns = [/how are you doing hal/,/how are you doing how/,/how are you doing jarvis/,/good evening hal/,/good evening how/,/good evening jarvis/];
+	console.log(patterns);
+	var match = false;
+	for (var i = patterns.length - 1; i >= 0; i--) {
+		if (patterns[i].test(text)) {
+			match = true;
+		}
+	}
+
+	if (match) {
+		if (this.controller) {
+			this.controller.playAudio("http://www.palantir.net/2001/tma1/wav/hihal.wav");
+		}
+	}
 }
 
 
