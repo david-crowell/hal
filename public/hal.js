@@ -36,7 +36,7 @@ Hal.prototype.handleEvent = function(event) {
 }
 
 Hal.prototype.parseForCommand = function(text) {
-	text = this.trimBeginningSpaces(text);
+	text = this.trimBeginningSpaces(text.toLowerCase());
 	if (this.startsWithName(text)) {
 		console.log("Starts right: " + text);
 		this.tryConfirm(text);
