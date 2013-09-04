@@ -3,7 +3,12 @@
 	<script type="text/javascript" src="/alarm.js"></script>
 	<script type="text/javascript" src="/hal.js"></script>
 	<script type="text/javascript">	    		
-		var hal = new Hal();		
+		var hal = new Hal();	
+
+		function startAlarm() {
+			window.open(document.getElementById(musicloc));
+			alert("WAKE UP");
+		}
 	</script>
 </head>
 <body>
@@ -15,13 +20,13 @@
 <div><div class="leftcolumn">Current Time:</div> <span id="currentTimeElement" style="letter-spacing: 2px"></span></div>
 <!-- div><div class="leftcolumn">Set Alarm:</div> <span><select></select> Hour</span> <span><select></select> Minutes</span> <span><select></select> Seconds</span></div -->
 <div><div class="leftcolumn">Set Alarm:</div> <input type="text" id="wakeHoursInput" size="2" align="right" /> Hours <input type="text" id="wakeMinutesInput" size="2" align="right" /> Minutes <input type="text" id="wakeSecondsInput" size="2" align="right" /> Seconds </div>
-<div><div class="leftcolumn">Set Alarm Action:</div> <input type="text" id="musicloc" size="55" value="http://www.youtube.com/watch?v=v1zY_tV5kaQ" /> <span style="font: normal 11px Tahoma">*Location of page to launch</span></div>
+<div><div class="leftcolumn">Set Alarm Action:</div> <input type="text" id="musicloc" size="55" value="http://www.youtube.com/watch?v=nM2-IExvnrI" /> <span style="font: normal 11px Tahoma">*Location of page to launch</span></div>
 <input type="submit" value="Set Alarm!" id="submitbutton" /> <input type="reset" value="reset" id="resetbutton" />
 </div>
 </form>
 <script type="text/javascript">
 
-var alarm = new Alarm(document.getElementById('currentTimeElement'),document.getElementById('wakeHoursInput'),document.getElementById('wakeMinutesInput'),document.getElementById('wakeSecondsInput'));
+var alarm = new Alarm(startAlarm, document.getElementById('currentTimeElement'), document.getElementById('wakeHoursInput'), document.getElementById('wakeMinutesInput'), document.getElementById('wakeSecondsInput'));
 alarm.start();
 
 </script>

@@ -1,6 +1,7 @@
 var globalAlarm;
 
-var Alarm = function(currentTimeElement, hoursInput, minutesInput, secondsInput) {
+var Alarm = function(alarmHandler, currentTimeElement, hoursInput, minutesInput, secondsInput) {
+	this.alarmHandler = alarmHandler;
 	this.currentTimeElement = currentTimeElement;
 	this.hoursInput = hoursInput;
 	this.minutesInput = minutesInput;
@@ -39,10 +40,10 @@ Alarm.prototype.isWakeTime = function(time) {
 }
 
 Alarm.prototype.checkAlarm = function(now) {
-	if (this.isWakeTime(now)) {
-		alert("WAKE UP!");
+	if (this.isWakeTime(now)) {	
 		console.log("WAKE UP!");
 		console.log(new Date());
+		this.alarmHandler();
 	}
 }
 
