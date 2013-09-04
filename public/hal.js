@@ -100,17 +100,17 @@ Hal.prototype.tryConfirm = function(text) {
 Hal.prototype.trySetAlarmFor = function(text) {
 	console.log('sort of trying ' + text);
 	if (!(/set alarm for/.test(text))) return false;
-	if (!(/.* hours/.test(text))) return false;
-	if (!(/.* minutes/.test(text))) return false;
+	if (!(/.* hour/.test(text))) return false;
+	if (!(/.* minute/.test(text))) return false;
 	console.log("trying");
 
-	var hoursPhrase = /.* hours/.exec(text)[0]; // should come back 'hal set alarm for 12 hours'		
+	var hoursPhrase = /.* hour/.exec(text)[0]; // should come back 'hal set alarm for 12 hours'		
 	var hoursParts = hoursPhrase.split(' '); // ['hal','set','alarm','for','12','hours']
 	console.log(hoursParts);
 	var hoursStr = this.fixNumberParsing(hoursParts[hoursParts.length - 2]); // '12'
 	var hours = parseInt(hoursStr);
 
-	var minutesParts = /.* minutes/.exec(text)[0].split(' ');
+	var minutesParts = /.* minute/.exec(text)[0].split(' ');
 	console.log(minutesParts);
 	var minutes = parseInt(this.fixNumberParsing(minutesParts[minutesParts.length - 2]));
 
@@ -133,8 +133,8 @@ Hal.prototype.trySnoozeAlarm = function(text) {
 	if (!(/snooze alarm/.test(text)) && !(/news alarm/.test(text))) return false;
 
 	var minutes = 5;
-	if (/.* minutes/.test(text)) {
-		var minutesParts = /.* minutes/.exec(text)[0].split(' ');
+	if (/.* minute/.test(text)) {
+		var minutesParts = /.* minute/.exec(text)[0].split(' ');
 		console.log(minutesParts);
 		minutes = parseInt(this.fixNumberParsing(minutesParts[minutesParts.length - 2]));	
 		//alert(minutes);
