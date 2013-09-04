@@ -79,6 +79,14 @@ Alarm.prototype.start = function() {
 	setInterval(this.everySecond, 1000);
 }
 
+Alarm.prototype.addMinutes = function(n) {
+	var newMinutes = (this.wakeMinute + n) % 60;
+	var newHours = this.wakeHour + Math.floor((this.wakeMinute + n) / 60);
+	newHours = newHours % 24;
+	var newSeconds = this.wakeSecond;
+	this.setWakeTime(newHours, newMinutes, newSeconds);
+}
+
 //var a = new Alarm({setAttribute:function(foo){}},{setAttribute:function(foo){}},{setAttribute:function(foo){}},{setAttribute:function(foo){}});
 //a.start();
 //a.setWakeTime(20,34,00);

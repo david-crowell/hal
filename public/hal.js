@@ -39,7 +39,9 @@ Hal.prototype.parseForCommand = function(text) {
 	text = this.trimBeginningSpaces(text);
 	if (this.startsWithName(text)) {
 		console.log("Starts right: " + text);
+		this.tryConfirm(text);
 		this.trySetAlarmFor(text);
+		this.trySnoozeAlarm(text);
 	} else {
 		console.log("FAILS: " + text);
 	}
@@ -49,7 +51,7 @@ Hal.prototype.startsWithName = function(text) {
 	var lower = text.toLowerCase();
 	var parts = lower.split(' ');
 	console.log(parts);
-	var matches = {'hal':1,'how':1,'jarvis':1,'viva':1};
+	var matches = {'hal':1,'how':1,'jarvis':1};
 	if (parts[0] in matches) {
 		return true;	
 	} else {
@@ -75,6 +77,24 @@ Hal.prototype.fixNumberParsing = function(input) {
 	input = input.replace('won', '1');
 	input = input.replace('tin', '10');
 	return input;
+}
+
+Hal.prototype.tryConfirm = function(text) {
+	if (!(/confirm/.test(text))) return false;
+
+	console.log("trying confirm: " + text);
+	if (text.split(' ').length > 5) {
+		//probably not right
+		return false;
+	}
+	else {
+		if (this.confirmationCallback) {
+			this.confirmationCallback(true);
+			this.confirmationCallback = null;
+		} else {
+			console.log("null confirmation");
+		}
+	}
 }
 
 Hal.prototype.trySetAlarmFor = function(text) {
@@ -107,3 +127,79 @@ Hal.prototype.trySetAlarmFor = function(text) {
 	}
 	return true;
 }
+
+Hal.prototype.trySnoozeAlarm = function(text) {
+	console.log('snooze');
+	if (!(/snooze alarm/.test(text)) && !(/news alarm/.test(text))) return false;
+
+	var minutes = 5;
+	if (/.* minutes/.test(text)) {
+		var minutesParts = /.* minutes/.exec(text)[0].split(' ');
+		console.log(minutesParts);
+		minutes = parseInt(this.fixNumberParsing(minutesParts[minutesParts.length - 2]));	
+		//alert(minutes);
+		this.confirmSnoozeMinutes(minutes, function(confirmed) {
+			if (confirmed) {
+				globalHal.snoozeForMinutes(minutes);
+				globalHal.controller.playAudio("http://www.palantir.net/2001/tma1/wav/decision.wav");
+			} else {
+				globalHal.controller.playAudio("http://www.palantir.net/2001/tma1/wav/cantdo.wav");
+			}
+		});
+	} else {
+		this.snoozeForMinutes(minutes);
+	}	
+	return true;
+}
+
+Hal.prototype.snoozeForMinutes = function(minutes){
+	console.log("snoozing for " + minutes + " minutes");
+	if (this.controller) {
+		this.controller.snoozeAlarm(minutes);
+	} else {
+		console.log('aint got it at snooze ');
+		console.log(this);
+	}	
+}
+
+Hal.prototype.confirmSnoozeMinutes = function(minutes, callback) {
+	var url = "http://translate.google.com/translate_tts?tl=en_gb&total=1&q=" + encodeURIComponent("setting alarm for " + minutes + " minutes. Confirm?");
+	console.log(url);
+	if (this.controller) {
+		this.controller.playAudio(url);
+	} else {
+		console.log('aint got it in confirm snooze minutes');
+		console.log(this);
+	}
+	var thisCallback = function(args) {
+		callback(args);
+		this.confirmationCallback = null;
+	}
+	this.confirmationCallback = thisCallback;
+	setTimeout(function(){
+		if (globalHal.confirmationCallback === thisCallback) {
+			globalHal.confirmationCallback(false);
+			globalHal.confirmationCallback = null;
+		}
+	}, 15000);
+}
+
+Hal.prototype.tryStopAlarm = function(text) {
+	console.log('stop');
+	if (!(/stop alarm/.test(text))) return false;
+
+	if (this.controller) {
+		this.controller.stopAlarm();
+	} else {
+		console.log('aint got it');
+		console.log(this);
+	}
+	return true;
+}
+
+
+
+
+
+
+
