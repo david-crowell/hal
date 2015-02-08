@@ -1,21 +1,18 @@
 var BackgroundVideoController = {
 	$wrapper : null,
 
-	changeVideo : function() {
-		this.changeVideoWithOptions({'id':'BPDYFt1pYxk'});
+	playVideo : function(options) {
+		this.$wrapper.playBackgroundVideo(options, this.$wrapper);
 	},
 
-	changeVideoWithOptions : function(options) {
-		this.$wrapper.changeTubularVideo(options, this.$wrapper);
+	playDefaultVideo : function() {
+		this.playVideo({'id':'M1Deb8CQHcM'});
 	}
 };
 
 var wrapper;
-var options = { videoId: 'e4Is32W-ppk' }
 $('document').ready(function() {
-	var options = { videoId: 'e4Is32W-ppk' };
-	BackgroundVideoController.$wrapper = $('#wrapper');
-	wrapper = BackgroundVideoController.$wrapper;
-	console.log(wrapper);
-	BackgroundVideoController.$wrapper.tubular(options, BackgroundVideoController.$wrapper);
+	var wrapper = $('#wrapper');
+	BackgroundVideoController.$wrapper = wrapper;
+	wrapper.setupBackgroundVideo({}, wrapper);
 });

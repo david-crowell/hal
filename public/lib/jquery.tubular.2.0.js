@@ -14,7 +14,6 @@
     // defaults
     var defaults = {
         ratio: 16/9, // usually either 4/3 or 16/9 -- tweak as needed
-        videoId: 'ZCAnLxRvNNc',
         mute: true,
         repeat: true,
         width: $(window).width(),
@@ -68,8 +67,11 @@
         window.onPlayerReady = function(e) {
             resize();
             if (getOptions().mute) e.target.mute();
-            e.target.seekTo(getOptions().start);
-            e.target.playVideo();
+            if (getOptions().id) {
+                e.target.seekTo(getOptions().start);
+                e.target.loadVideoById(getOptions().id);
+            }
+            setInitialized();
         }
 
         window.onPlayerStateChange = function(state) {
@@ -111,6 +113,9 @@
         function setOptions(options) {
             $.data($node, 'options', options);
         }
+        function setInitialized() {
+            $.data($node, 'initialized', true);
+        }
 
         // events
         $(window).on('resize.tubular', function() {
@@ -146,6 +151,9 @@
     function getOptions($node) {
         return $.data($node, 'options');
     }
+    function hasInitialized($node) {
+        return $.data($node, 'initialized');
+    }
     function setPlayer($node, player) {
         $.data($node, 'player', player);
     }
@@ -153,9 +161,28 @@
         $.data($node, 'options', options);
     }
 
-    var changeVideo = function($node, opts){
-        getPlayer($node).loadVideoById(opts.id);
-        getPlayer($node).seekTo(opts.start);
+    function getMethods(obj) {
+      var result = [];
+      for (var id in obj) {
+        try {
+          if (typeof(obj[id]) == "function") {
+            result.push(id + ": " + obj[id].toString());
+          }
+        } catch (err) {
+          result.push(id + ": inaccessible");
+        }
+      }
+      return result;
+    }
+
+    var playVideo = function($node, options){
+        var player = getPlayer($node);
+        setOptions($node, options);
+        if (hasInitialized($node)) {
+            if (options.mute) player.mute();
+            player.loadVideoById(options.id);
+            player.seekTo(options.start);
+        }
     }
 
     // load yt iframe js api
@@ -167,7 +194,7 @@
 
     // create plugin
 
-    $.fn.tubular = function (options, $node) {
+    $.fn.setupBackgroundVideo = function (options, $node) {
         return this.each(function () {
             if (!$.data($node, 'tubular_instantiated')) { // let's only run one
                 $.data($node, 'tubular_instantiated', 
@@ -176,10 +203,10 @@
         });
     }
 
-    $.fn.changeTubularVideo = function(opts, $node){
-        opts = $.extend({}, getOptions($node), opts);
-        setOptions($node, opts);
-        changeVideo($node, opts);
+    $.fn.playBackgroundVideo = function(options, $node) {
+        options = $.extend({}, getOptions($node), options);
+        setOptions($node, options);
+        playVideo($node, options); 
     }
 
 })(jQuery, window);
