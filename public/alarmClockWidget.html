@@ -4,6 +4,7 @@
 	<script type="text/javascript" src="/lib/jquery.tubular.1.0.js"></script>
 	<script type="text/javascript" src="/alarm.js"></script>
 	<script type="text/javascript" src="/hal.js"></script>
+	<script type="text/javascript" src="/controllers/backgroundVideoController.js"></script>
 	<link rel="stylesheet" href="stylesheets/alarmclock.css" />
 	<script type="text/javascript">	    		
 
@@ -87,35 +88,6 @@
 			console.log('r: ' + r + ' mod: ' + mod);
 			return (r % mod) + min;
 		}
-
-		var wrapper;
-		var options = { videoId: 'e4Is32W-ppk' }
-		$('document').ready(function() {
-			// var a = $('#wrapper');
-			// var b = $('#wrapper');
-			// $.data(a, 'first', 1);
-			// console.log('on a:');console.log($.data(a, 'first'));
-			// console.log('on fresh:');console.log($.data($('#wrapper'), 'first'));
-			// console.log('changing to 5 on b');
-			// $.data(b, 'first', 5);
-			// console.log('on a:');console.log($.data(a, 'first'));
-			// console.log('on b:');console.log($.data(b, 'first'));
-			// console.log('on fresh:');console.log($.data($('#wrapper'), 'first'));
-			// console.log('changing to 10 on fresh');
-			// $.data($('#wrapper'), 'first', 10);
-			// console.log('on a:');console.log($.data(a, 'first'));
-			// console.log('on b:');console.log($.data(b, 'first'));
-			// console.log('on fresh:');console.log($.data($('#wrapper'), 'first'));
-
-			var options = { videoId: 'e4Is32W-ppk' };
-			AlarmClockController.$wrapper = $('#wrapper');
-			wrapper = AlarmClockController.$wrapper;
-			$.data(wrapper, 'first', 5);
-			console.log('on wrapper:');console.log($.data(wrapper, 'first'));
-			console.log('on ACC.wrap:');console.log($.data(AlarmClockController.$wrapper, 'first'));
-			console.log('on fresh:');console.log($.data($('#wrapper'), 'first'));
-			AlarmClockController.$wrapper.tubular(options, AlarmClockController.$wrapper);
-		});
 	</script>
 </head>
 <body onload="AlarmClockController.viewDidLoad();">

@@ -70,18 +70,15 @@
 
         window.onPlayerReady = function(e) {
             resize();
-            if (options.mute) e.target.mute();
-            e.target.seekTo(options.start);
+            if (getOptions().mute) e.target.mute();
+            e.target.seekTo(getOptions().start);
             e.target.playVideo();
         }
 
         window.onPlayerStateChange = function(state) {
             console.log("STATE CHANGED");
-            console.log('logging node');console.log($node);
-            console.log('logging player');console.log(getPlayer());
-            console.log('logging options');console.log(getOptions());
-            if (state.data === 0 && options.repeat) { // video ended and repeat option is set true
-                player.seekTo(options.start); // restart
+            if (state.data === 0 && getOptions().repeat) { // video ended and repeat option is set true
+                player.seekTo(getOptions().start); // restart
                 player.playVideo();
             }
         }
@@ -164,6 +161,7 @@
         console.log('player');console.log(getPlayer($node));
         console.log('options');console.log(getOptions($node));
         getPlayer($node).loadVideoById(opts.id);
+        getPlayer($node).seekTo(opts.start);
         //var element = document.getElementById('tubular-container');
         //element.parentNode.removeChild(element);
     }
