@@ -1,0 +1,80 @@
+<html>
+<head>
+	<script type="text/javascript" src="/alarm.js"></script>
+	<script type="text/javascript" src="/hal.js"></script>
+	<script type="text/javascript">	    		
+
+		var AlarmClockController = {	
+			fireAlarm : function() {
+				console.log('firing alarm!');
+				var link = document.getElementById('musicloc').value;
+				if (link) {
+					window.open(link, 'alarm');
+				} else {
+					AlarmClockController.playAudio("http://www.palantir.net/2001/tma1/wav/zarathustra.wav");
+				}
+			},
+			setAlarm : function(hours, minutes, seconds) {
+				console.log('got it up here');
+				this.alarm.setWakeTime(hours, minutes, seconds);
+			},
+			viewDidLoad : function() {
+				this.controller = top.Controller;
+				this.controller.alarmClockController = this;
+				this.hal = this.controller.hal;
+				this.hal.setWakeTimeCallback(this.setAlarm);
+				this.alarm = new Alarm(this.fireAlarm, document.getElementById('currentTimeElement'), document.getElementById('wakeHoursInput'), document.getElementById('wakeMinutesInput'), document.getElementById('wakeSecondsInput'));
+				this.alarm.start();
+			},
+			stopAlarm : function() {
+				console.log(this);
+				this.controller.clearAudio();
+			},
+			snoozeAlarm : function(minutes) {
+				if (!minutes) {
+					minutes = 5;
+				}
+				this.alarm.addMinutes(minutes);
+			},
+			playAudio : function(location) {
+				this.controller.playAudio(location);
+			},
+			clearAudio : function() {
+				this.controller.clearAudio();
+			}
+		};
+	</script>
+</head>
+<body onload="AlarmClockController.viewDidLoad();">
+
+<button onclick="AlarmClockController.hal.start()">Good Morning, HAL</button>
+
+<br />
+<br />
+
+<button onclick="AlarmClockController.snoozeAlarm();">SNOOZE</button>
+
+<form action="" method="">
+<div id="alarmclock">
+<div><div class="leftcolumn">Current Time:</div> <span id="currentTimeElement" style="letter-spacing: 2px"></span></div>
+<!-- div><div class="leftcolumn">Set Alarm:</div> <span><select></select> Hour</span> <span><select></select> Minutes</span> <span><select></select> Seconds</span></div -->
+<div><div class="leftcolumn">Set Alarm:</div> <input type="text" id="wakeHoursInput" size="2" align="right" value="0" /> Hours <input type="text" id="wakeMinutesInput" size="2" align="right" value="0" /> Minutes <input type="text" id="wakeSecondsInput" size="2" align="right" value="0" /> Seconds </div>
+<div><div class="leftcolumn">Set Alarm Action:</div> <input type="text" id="musicloc" size="55" /> <span style="font: normal 11px Tahoma">*leave blank for a thematic alternative</span></div>
+<!--input type="submit" value="Set Alarm!" id="submitbutton" /> <input type="reset" value="reset" id="resetbutton" /-->
+</div>
+</form>
+
+<br />
+<br />
+
+<button onclick="AlarmClockController.stopAlarm();">TURN OFF</button>
+<!--script type="text/javascript">
+
+var alarm = new Alarm(startAlarm, document.getElementById('currentTimeElement'), document.getElementById('wakeHoursInput'), document.getElementById('wakeMinutesInput'), document.getElementById('wakeSecondsInput'));
+alarm.start();
+
+</script-->
+
+</body>
+</html>
+

@@ -1,79 +1,87 @@
 <html>
 <head>
+	<link rel="stylesheet" href="stylesheets/hal.css" />
 	<script type="text/javascript" src="/alarm.js"></script>
 	<script type="text/javascript" src="/hal.js"></script>
 	<script type="text/javascript">	    		
-		var code =  '' +
-			'function foo(x){' +
-				'console.log(x);' +
-				'return x;' +
-			'}';
-		var code2 =  '' +
-			'function foo(x){' +
-				'console.log("other");' +
-				'return x;' +
-			'}';
-
 		var Controller = {			
 			viewDidLoad : function() {
 				this.hal = new Hal(this);
-
-				this.addCode(code, 'extra');
-				// var script = document.createElement('script');
-				// script.id = 'extra';
-				// script.text = code;
-				// document.body.appendChild(script);
-				//var ele = document.getElementById('extra');
-				//ele.innerHTML = code;
+				this.addWidget('alarmClockWidget.html');
+				this.showBanner('Alarm Clock loaded');
 			},
 
-			removeCode : function(id) {
-				var ele = document.getElementById(id);
-				if (ele) {
-					ele.parentNode.removeChild(ele);
-					console.log('worked');
+			clearWidgets : function() {
+				var canvas = document.getElementById('widgetCanvas');
+				var widgets = canvas.childNodes;
+				console.log(widgets);
+				for (var i = widgets.length - 1; i >= 0; i--) {
+					canvas.removeChild(widgets[i]);
+				};
+				console.log('finished clearing');
+			},
+
+			addWidget : function(path) {
+				this.clearWidgets();
+				var canvas = document.getElementById('widgetCanvas');
+				var frame = document.createElement('iframe');
+				frame.src = path;
+				canvas.appendChild(frame);
+			},
+
+			log : function(text) {
+				console.log(text);
+				console.log("Banner: " + text);
+				Controller.showBanner(text);
+			},
+
+			showBanner : function(text) {
+				if (this.bannerFadeInterval) {
+					clearInterval(this.bannerFadeInterval);
 				}
+				console.log(this.getBanner().innerHTML);
+				var banner = this.getBanner();
+				banner.innerHTML = '<h1>' + text + '</h1>';
+				console.log(banner.innerHTML);
+				banner.height = 30;
+				this.bannerFadeInterval = setInterval(this.hideBanner, 5000);
 			},
 
-			addCode : function(codeString, id) {
-				if (id == null) { id = 'extra'; }
-				var script = document.createElement('script');
-				script.id = id;
-				script.text = codeString;
-				document.body.appendChild(script);
+			hideBanner : function() {
+				Controller.getBanner().innerHTML = '';
+			},
+
+			getBanner : function() {
+				if (this.banner) { return banner; }
+				this.banner = document.getElementById('banner');
+				return this.banner;
+			},
+
+			playAudio : function(location) {
+				this.clearAudio();
+				console.log("playing new audio: " + location);
+				this.audio = new Audio(location);
+				this.audio.addEventListener('ended',function(){});
+				this.audio.play();
+			},
+
+			clearAudio : function() {
+				if (this.audio) {
+					this.audio.pause();
+				}
 			}
 		};    		
 	</script>
+
 </head>
 <body onload="Controller.viewDidLoad();">
 
-<button onclick="Controller.hal.start()">Good Morning, HAL</button>
-
-<br />
-<br />
-
-<button onclick="Controller.snoozeAlarm();">SNOOZE</button>
-
-<form action="" method="">
-<div id="alarmclock">
-<div><div class="leftcolumn">Current Time:</div> <span id="currentTimeElement" style="letter-spacing: 2px"></span></div>
-<!-- div><div class="leftcolumn">Set Alarm:</div> <span><select></select> Hour</span> <span><select></select> Minutes</span> <span><select></select> Seconds</span></div -->
-<div><div class="leftcolumn">Set Alarm:</div> <input type="text" id="wakeHoursInput" size="2" align="right" value="0" /> Hours <input type="text" id="wakeMinutesInput" size="2" align="right" value="0" /> Minutes <input type="text" id="wakeSecondsInput" size="2" align="right" value="0" /> Seconds </div>
-<div><div class="leftcolumn">Set Alarm Action:</div> <input type="text" id="musicloc" size="55" /> <span style="font: normal 11px Tahoma">*leave blank for a thematic alternative</span></div>
-<!--input type="submit" value="Set Alarm!" id="submitbutton" /> <input type="reset" value="reset" id="resetbutton" /-->
+<div id='banner'>
 </div>
-</form>
 
-<br />
-<br />
-
-<button onclick="Controller.stopAlarm();">TURN OFF</button>
-<!--script type="text/javascript">
-
-var alarm = new Alarm(startAlarm, document.getElementById('currentTimeElement'), document.getElementById('wakeHoursInput'), document.getElementById('wakeMinutesInput'), document.getElementById('wakeSecondsInput'));
-alarm.start();
-
-</script-->
+<div id='widgetCanvas'>
+<iframe src="startWidget.html"></iframe>
+</div>
 
 </body>
 </html>

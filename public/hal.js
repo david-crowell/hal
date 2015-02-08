@@ -38,14 +38,15 @@ Hal.prototype.handleEvent = function(event) {
 Hal.prototype.parseForCommand = function(text) {
 	text = this.trimBeginningSpaces(text.toLowerCase());
 	if (this.startsWithName(text)) {
-		console.log("Starts right: " + text);
+		this.controller.log("Keyword found: " + text);
 		this.tryConfirm(text);
 		this.trySetAlarmFor(text);
 		this.trySnoozeAlarm(text);
+		this.tryStopAlarm(text);
 	} else {
 		var savingThrow = this.tryGoodEvening(text);
 		if (!savingThrow) {
-			console.log("FAILS: " + text);
+			this.controller.log("No command matched: " + text);
 		}
 	}
 }
@@ -53,7 +54,6 @@ Hal.prototype.parseForCommand = function(text) {
 Hal.prototype.startsWithName = function(text) {
 	var lower = text.toLowerCase();
 	var parts = lower.split(' ');
-	console.log(parts);
 	var matches = {'hal':1,'how':1,'jarvis':1};
 	if (parts[0] in matches) {
 		return true;	
@@ -85,7 +85,7 @@ Hal.prototype.fixNumberParsing = function(input) {
 Hal.prototype.tryConfirm = function(text) {
 	if (!(/confirm/.test(text))) return false;
 
-	console.log("trying confirm: " + text);
+	this.controller.log("Parsing for confirmation: " + text);
 	if (text.split(' ').length > 5) {
 		//probably not right
 		return false;
@@ -95,51 +95,62 @@ Hal.prototype.tryConfirm = function(text) {
 			this.confirmationCallback(true);
 			this.confirmationCallback = null;
 		} else {
-			console.log("null confirmation");
+			this.controller.log("null confirmation");
 		}
 	}
 }
 
+Hal.prototype.tryGoodEvening = function(text) {
+	var patterns = [/how are you doing hal/,/how are you doing how/,/how are you doing jarvis/,/good evening hal/,/good evening how/,/good evening jarvis/];
+	var match = false;
+	for (var i = patterns.length - 1; i >= 0; i--) {
+		if (patterns[i].test(text)) {
+			match = true;
+		}
+	}
+
+	if (match) {
+		if (this.controller) {
+			this.controller.playAudio("http://www.palantir.net/2001/tma1/wav/hihal.wav");
+		}
+	}
+}
+
+// AlarmClockWidget
 Hal.prototype.trySetAlarmFor = function(text) {
-	console.log('sort of trying ' + text);
+	this.controller.log('Parsing for setting alarm: ' + text);
 	if (!(/set alarm for/.test(text))) return false;
 	if (!(/.* hour/.test(text))) return false;
 	if (!(/.* minute/.test(text))) return false;
-	console.log("trying");
 
 	var hoursPhrase = /.* hour/.exec(text)[0]; // should come back 'hal set alarm for 12 hours'		
 	var hoursParts = hoursPhrase.split(' '); // ['hal','set','alarm','for','12','hours']
-	console.log(hoursParts);
 	var hoursStr = this.fixNumberParsing(hoursParts[hoursParts.length - 2]); // '12'
 	var hours = parseInt(hoursStr);
 
 	var minutesParts = /.* minute/.exec(text)[0].split(' ');
-	console.log(minutesParts);
 	var minutes = parseInt(this.fixNumberParsing(minutesParts[minutesParts.length - 2]));
 
 	var seconds = 0;
 
-	console.log(hours + " : " + minutes);
-	//alert(hours + " : " + minutes);
-	if (this.controller) {
-		this.controller.setAlarm(hours, minutes, seconds);
+	this.controller.log("Setting alarm for " + hours + " : " + minutes);
+	if (this.controller && this.controller.alarmClockController) {
+		this.controller.alarmClockController.setAlarm(hours, minutes, seconds);
 		//wakeTimeCallback(hours, minutes, seconds);
 	} else {
-		console.log('aint got it');
-		console.log(this);
+		this.controller.log('Can\'t find controllers');
 	}
 	return true;
 }
 
+// AlarmClockWidget
 Hal.prototype.trySnoozeAlarm = function(text) {
-	console.log('snooze');
 	if (!(/snooze alarm/.test(text)) && !(/news alarm/.test(text))) return false;
 
-	console.log(text);
+	this.controller.log('Parsing for snooze: ' + text);
 	var minutes = 5;
 	if (/.* minute/.test(text)) {
 		var minutesParts = /.* minute/.exec(text)[0].split(' ');
-		console.log(minutesParts);
 		minutes = parseInt(this.fixNumberParsing(minutesParts[minutesParts.length - 2]));	
 		this.snoozeMinutesAwaitingConfirmation = minutes;
 		//alert(minutes);
@@ -157,24 +168,25 @@ Hal.prototype.trySnoozeAlarm = function(text) {
 	return true;
 }
 
+// AlarmClockWidget
 Hal.prototype.snoozeForMinutes = function(minutes){
 	console.log("snoozing for " + minutes + " minutes");
-	if (this.controller) {
-		this.controller.snoozeAlarm(minutes);
+	if (this.controller && this.controller.alarmClockController) {
+		this.controller.alarmClockController.snoozeAlarm(minutes);
 	} else {
-		console.log('aint got it at snooze ');
-		console.log(this);
+		this.controller.log('Can\'t find snooze controllers')
 	}	
 }
 
+// AlarmClockWidget
 Hal.prototype.confirmSnoozeMinutes = function(minutes, callback) {
+	this.controller.log('Snooze for ' + minutes + ' minutes. Confirm?');
 	var url = "http://translate.google.com/translate_tts?tl=en_gb&total=1&q=" + encodeURIComponent("setting alarm for " + minutes + " minutes. Confirm?");
 	console.log(url);
-	if (this.controller) {
-		this.controller.playAudio(url);
+	if (this.controller && this.controller.alarmClockController) {
+		this.controller.alarmClockController.playAudio(url);
 	} else {
-		console.log('aint got it in confirm snooze minutes');
-		console.log(this);
+		this.controller.log('Can\'t find confirm snooze controllers');
 	}
 	var thisCallback = function(args) {
 		callback(args);
@@ -189,34 +201,17 @@ Hal.prototype.confirmSnoozeMinutes = function(minutes, callback) {
 	}, 15000);
 }
 
+// AlarmClockWidget
 Hal.prototype.tryStopAlarm = function(text) {
-	console.log('stop');
 	if (!(/stop alarm/.test(text))) return false;
+	this.controller.log('Stopping alarm');
 
-	if (this.controller) {
-		this.controller.stopAlarm();
+	if (this.controller && this.controller.alarmClockController) {
+		this.controller.alarmClockController.stopAlarm();
 	} else {
-		console.log('aint got it');
-		console.log(this);
+		this.controller.log('Can\'t find stop alarm controllers')
 	}
 	return true;
-}
-
-Hal.prototype.tryGoodEvening = function(text) {
-	var patterns = [/how are you doing hal/,/how are you doing how/,/how are you doing jarvis/,/good evening hal/,/good evening how/,/good evening jarvis/];
-	console.log(patterns);
-	var match = false;
-	for (var i = patterns.length - 1; i >= 0; i--) {
-		if (patterns[i].test(text)) {
-			match = true;
-		}
-	}
-
-	if (match) {
-		if (this.controller) {
-			this.controller.playAudio("http://www.palantir.net/2001/tma1/wav/hihal.wav");
-		}
-	}
 }
 
 
