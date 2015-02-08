@@ -43,13 +43,14 @@
 				this.alarm.setWakeTime(hours, minutes, seconds);
 			},
 			viewDidLoad : function() {
+				this.setBackgroundVideo( this.getWeatherVideo() );
 				this.controller = top.Controller;
 				this.controller.alarmClockController = this;
 				this.hal = this.controller.hal;
 				this.hal.setWakeTimeCallback(this.setAlarm);
 				this.alarm = new Alarm(this.fireAlarm, document.getElementById('currentTimeElement'), document.getElementById('wakeHoursInput'), document.getElementById('wakeMinutesInput'), document.getElementById('wakeSecondsInput'));
 				this.alarm.start();
-				this.setBackgroundVideo( this.getWeatherVideo() );
+				//this.setBackgroundVideo( this.getWeatherVideo() );
 			},
 			stopAlarm : function() {
 				console.log(this);
