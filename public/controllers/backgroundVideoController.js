@@ -16,5 +16,6 @@ $('document').ready(function() {
 	var options = { videoId: 'e4Is32W-ppk' };
 	BackgroundVideoController.$wrapper = $('#wrapper');
 	wrapper = BackgroundVideoController.$wrapper;
+	console.log(wrapper);
 	BackgroundVideoController.$wrapper.tubular(options, BackgroundVideoController.$wrapper);
 });

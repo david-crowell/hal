@@ -1,8 +1,8 @@
 /* jQuery tubular plugin
-|* by Sean McCambridge
+|* by Sean McCambridge, modified by David Crowell
 |* http://www.seanmccambridge.com/tubular
-|* version: 1.0
-|* updated: October 1, 2012
+|* version: 2.0
+|* updated: February 8, 2015
 |* since 2010
 |* licensed under the MIT License
 |* Enjoy.
@@ -11,13 +11,10 @@
 |* Sean */
 
 ;(function ($, window) {
-
-    // test for feature support and return if failure
-    
     // defaults
     var defaults = {
         ratio: 16/9, // usually either 4/3 or 16/9 -- tweak as needed
-        videoId: 'ZCAnLxRvNNc', // toy robot in space is a good default, no?
+        videoId: 'ZCAnLxRvNNc',
         mute: true,
         repeat: true,
         width: $(window).width(),
@@ -76,7 +73,6 @@
         }
 
         window.onPlayerStateChange = function(state) {
-            console.log("STATE CHANGED");
             if (state.data === 0 && getOptions().repeat) { // video ended and repeat option is set true
                 player.seekTo(getOptions().start); // restart
                 player.playVideo();
@@ -158,12 +154,8 @@
     }
 
     var changeVideo = function($node, opts){
-        console.log('player');console.log(getPlayer($node));
-        console.log('options');console.log(getOptions($node));
         getPlayer($node).loadVideoById(opts.id);
         getPlayer($node).seekTo(opts.start);
-        //var element = document.getElementById('tubular-container');
-        //element.parentNode.removeChild(element);
     }
 
     // load yt iframe js api
@@ -180,17 +172,11 @@
             if (!$.data($node, 'tubular_instantiated')) { // let's only run one
                 $.data($node, 'tubular_instantiated', 
                 tubular($node, options));
-            } else {
-                console.log($.data($node, 'tubular_instantiated'));
-                console.log('ooooooops');
             }
         });
     }
 
     $.fn.changeTubularVideo = function(opts, $node){
-        console.log($node);
-        console.log($.data($node));
-        console.log(getOptions($node));
         opts = $.extend({}, getOptions($node), opts);
         setOptions($node, opts);
         changeVideo($node, opts);
