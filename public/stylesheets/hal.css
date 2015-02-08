@@ -27,7 +27,7 @@ iframe {
 }
 
 #banner {
-	z-index:99;
+	z-index:150;
 	position:absolute;
 	bottom:0;
 	right:0;
