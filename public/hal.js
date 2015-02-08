@@ -45,8 +45,9 @@ Hal.prototype.parseForCommand = function(text) {
 		this.tryStopAlarm(text);
 	} else {
 		var savingThrow = this.tryGoodEvening(text);
+		savingThrow = savingThrow || this.tryStopAlarm(text);
 		if (!savingThrow) {
-			this.controller.log("No command matched: " + text);
+			//this.controller.log("No command matched: " + text);
 		}
 	}
 }
@@ -133,7 +134,7 @@ Hal.prototype.trySetAlarmFor = function(text) {
 
 	var seconds = 0;
 
-	this.controller.log("Setting alarm for " + hours + " : " + minutes);
+	this.controller.log("Setting alarm for " + hours + ":" + formatTwoDigitTime(minutes));
 	if (this.controller && this.controller.alarmClockController) {
 		this.controller.alarmClockController.setAlarm(hours, minutes, seconds);
 		//wakeTimeCallback(hours, minutes, seconds);
@@ -214,6 +215,9 @@ Hal.prototype.tryStopAlarm = function(text) {
 	return true;
 }
 
+function formatTwoDigitTime(t) {
+	return (t < 10) ? "0" + t : t;
+}
 
 
 
