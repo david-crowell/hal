@@ -33,11 +33,12 @@
 
     // methods
 
-    var tubular = function(node, options) { // should be called on the wrapper div
+    var tubular = function($node, options) { // should be called on the wrapper div
         var options = $.extend({}, defaults, options),
-            $body = $('body') // cache body node
-            $node = $(node); // cache wrapper node
+            $body = $('body'); // cache body node
+            // $node = $(node); // cache wrapper node
 
+        setOptions(options);
         // build container
         var tubularContainer = '<div id="tubular-container" style="overflow: hidden; position: fixed; z-index: 1; width: 100%; height: 100%"><div id="tubular-player" style="position: absolute"></div></div><div id="tubular-shield" style="width: 100%; height: 100%; z-index: 2; position: absolute; left: 0; top: 0;"></div>';
 
@@ -64,6 +65,7 @@
                     'onStateChange': onPlayerStateChange
                 }
             });
+            setPlayer(player);
         }
 
         window.onPlayerReady = function(e) {
@@ -74,8 +76,13 @@
         }
 
         window.onPlayerStateChange = function(state) {
+            console.log("STATE CHANGED");
+            console.log('logging node');console.log($node);
+            console.log('logging player');console.log(getPlayer());
+            console.log('logging options');console.log(getOptions());
             if (state.data === 0 && options.repeat) { // video ended and repeat option is set true
                 player.seekTo(options.start); // restart
+                player.playVideo();
             }
         }
 
@@ -97,6 +104,19 @@
                 $tubularPlayer.width(width).height(pHeight).css({left: 0, top: (height - pHeight) / 2}); // player height is greater, offset top; reset left
             }
 
+        }
+
+        function getPlayer() {
+            return $.data($node, 'player');
+        }
+        function getOptions() {
+            return $.data($node, 'options');
+        }
+        function setPlayer(player) {
+            $.data($node, 'player', player);
+        }
+        function setOptions(options) {
+            $.data($node, 'options', options);
         }
 
         // events
@@ -127,6 +147,27 @@
         })
     }
 
+    function getPlayer($node) {
+        return $.data($node, 'player');
+    }
+    function getOptions($node) {
+        return $.data($node, 'options');
+    }
+    function setPlayer($node, player) {
+        $.data($node, 'player', player);
+    }
+    function setOptions($node, options) {
+        $.data($node, 'options', options);
+    }
+
+    var changeVideo = function($node, opts){
+        console.log('player');console.log(getPlayer($node));
+        console.log('options');console.log(getOptions($node));
+        getPlayer($node).loadVideoById(opts.id);
+        //var element = document.getElementById('tubular-container');
+        //element.parentNode.removeChild(element);
+    }
+
     // load yt iframe js api
 
     var tag = document.createElement('script');
@@ -136,13 +177,25 @@
 
     // create plugin
 
-    $.fn.tubular = function (options) {
+    $.fn.tubular = function (options, $node) {
         return this.each(function () {
-            if (!$.data(this, 'tubular_instantiated')) { // let's only run one
-                $.data(this, 'tubular_instantiated', 
-                tubular(this, options));
+            if (!$.data($node, 'tubular_instantiated')) { // let's only run one
+                $.data($node, 'tubular_instantiated', 
+                tubular($node, options));
+            } else {
+                console.log($.data($node, 'tubular_instantiated'));
+                console.log('ooooooops');
             }
         });
+    }
+
+    $.fn.changeTubularVideo = function(opts, $node){
+        console.log($node);
+        console.log($.data($node));
+        console.log(getOptions($node));
+        opts = $.extend({}, getOptions($node), opts);
+        setOptions($node, opts);
+        changeVideo($node, opts);
     }
 
 })(jQuery, window);
