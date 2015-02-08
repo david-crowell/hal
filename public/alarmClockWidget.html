@@ -2,9 +2,31 @@
 <head>
 	<script type="text/javascript" src="/alarm.js"></script>
 	<script type="text/javascript" src="/hal.js"></script>
+	<link rel="stylesheet" href="stylesheets/alarmclock.css" />
 	<script type="text/javascript">	    		
 
-		var AlarmClockController = {	
+		var AlarmClockController = {
+			weatherVideos : {
+				'snow' :  ['http://media.giphy.com/media/12UCxsXdazBCso/giphy.mp4',
+						   'http://media.giphy.com/media/bnsWLCG5bEaiI/giphy.mp4',
+						   'http://media.giphy.com/media/NyZcEHukr40Ja/giphy.mp4',
+						   'http://media.giphy.com/media/aJ7YvM8rrpAEU/giphy.mp4'],
+			    'rain' :  ['http://media.giphy.com/media/10lZZFTqlxU3u0/giphy.mp4',
+			    		   'http://media.giphy.com/media/12GilBzHgblXAk/giphy.mp4',
+			    		   'http://media.giphy.com/media/134nsKFTOjoy08/giphy.mp4',
+			    		   'http://media.giphy.com/media/5f1tNZVLs2Lny/giphy.mp4'],
+			    'fog' :   ['http://media.giphy.com/media/hL8a3mIQK8Ehy/giphy.mp4',
+			    		   'http://media.giphy.com/media/zBHo3iX2OugcE/giphy.mp4'],
+			    'sun' :   ['http://media.giphy.com/media/mg26nA30gBlgQ/giphy.mp4',
+			    		   'http://media.giphy.com/media/H2BaDFFp6cCw8/giphy.mp4',
+			    		   'http://media.giphy.com/media/TXp4miBlavqSY/giphy.mp4',
+			    		   'http://media.giphy.com/media/QCsEPhEd8PpEA/giphy.mp4',
+			    		   'http://media.giphy.com/media/UqWwKG1XGutck/giphy.mp4'],
+			    'cloudy': ['http://media.giphy.com/media/6007IkHS1aFaM/giphy.mp4',
+			    		   'http://media.giphy.com/media/SSoMlZJAVttUk/giphy.mp4',
+			    		   'http://media.giphy.com/media/wvUpD8dydqYRW/giphy.mp4'],
+			    'aurora': ['http://media.giphy.com/media/z1vZC8vItLg0E/giphy.mp4']
+			},
 			fireAlarm : function() {
 				console.log('firing alarm!');
 				var link = document.getElementById('musicloc').value;
@@ -25,6 +47,7 @@
 				this.hal.setWakeTimeCallback(this.setAlarm);
 				this.alarm = new Alarm(this.fireAlarm, document.getElementById('currentTimeElement'), document.getElementById('wakeHoursInput'), document.getElementById('wakeMinutesInput'), document.getElementById('wakeSecondsInput'));
 				this.alarm.start();
+				this.setBackgroundVideo( this.getWeatherVideo() );
 			},
 			stopAlarm : function() {
 				console.log(this);
@@ -36,6 +59,15 @@
 				}
 				this.alarm.addMinutes(minutes);
 			},
+			setBackgroundVideo : function(link) {
+				var bgvid = document.getElementById("bgvid");
+				bgvid.setAttribute("src", link);
+			},
+			getWeatherVideo : function() {
+				var weatherTypes = Object.keys(this.weatherVideos);
+				var weather = weatherTypes[random(weatherTypes.length)];
+				return this.weatherVideos[weather][random(this.weatherVideos[weather].length - 1)];
+			},
 			playAudio : function(location) {
 				this.controller.playAudio(location);
 			},
@@ -43,6 +75,14 @@
 				this.controller.clearAudio();
 			}
 		};
+
+		function random(max, min) {
+			if (min == null) { min = 0; }
+			var r = Math.floor((Math.random() * 1000));
+			var mod = (max-min) + 1;
+			console.log('r: ' + r + ' mod: ' + mod);
+			return (r % mod) + min;
+		}
 	</script>
 </head>
 <body onload="AlarmClockController.viewDidLoad();">
@@ -51,6 +91,9 @@
 
 <br />
 <br />
+
+<video autoplay loop id="bgvid" src="http://media.giphy.com/media/bnsWLCG5bEaiI/giphy.mp4">
+</video>
 
 <button onclick="AlarmClockController.snoozeAlarm();">SNOOZE</button>
 

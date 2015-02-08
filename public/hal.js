@@ -47,7 +47,7 @@ Hal.prototype.parseForCommand = function(text) {
 		var savingThrow = this.tryGoodEvening(text);
 		savingThrow = savingThrow || this.tryStopAlarm(text);
 		if (!savingThrow) {
-			//this.controller.log("No command matched: " + text);
+			console.log("No command matched: " + text);
 		}
 	}
 }
