@@ -1,4 +1,6 @@
-var Controller = function(){};
+var Controller = function(){
+	//this.hal = new Hal(this);
+};
 
 Controller.prototype.viewDidLoad = function() {
 	this.hal = new Hal(this);
