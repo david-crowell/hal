@@ -466,7 +466,7 @@ SpotifyRemoteController.prototype._createSpotifyLink = function(label, url, type
 	return el;
 };
 
-var thisController = new SpotifyRemoteController('http://localhost:3333');
+var thisController = new SpotifyRemoteController('//localhost:3333');
 thisController.init(io);
 // $('document').ready(function() {
 // 	new SpotifyRemoteController().init(io);
