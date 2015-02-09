@@ -10,7 +10,6 @@ var BackgroundVideoController = {
 	}
 };
 
-var wrapper;
 $('document').ready(function() {
 	var wrapper = $('#wrapper');
 	BackgroundVideoController.$wrapper = wrapper;
