@@ -3,7 +3,7 @@ var AlarmClockController = {
 		console.log('firing alarm!');
 		var link = document.getElementById('musicloc').value;
 		if (link) {
-			window.open(link, 'alarm');
+			AlarmClockController.openInBackground(link);
 		} else {
 			AlarmClockController.playAudio("http://www.palantir.net/2001/tma1/wav/zarathustra.wav");
 		}
@@ -41,6 +41,13 @@ var AlarmClockController = {
 	},
 	clearAudio : function() {
 		this.controller.clearAudio();
+	},
+	openInBackground : function(url) {
+		if (this.controller) {
+			this.controller.openInBackground(url);
+		} else {
+			window.open(url, 'background');
+		}
 	}
 };
 

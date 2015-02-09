@@ -63,5 +63,14 @@ var Controller = {
 		if (this.audio) {
 			this.audio.pause();
 		}
+	},
+
+	openInBackground : function(url){
+		var a = document.createElement("a");
+		a.href = url;
+		var evt = document.createEvent("MouseEvents");
+		//the thirtenth parameter of initMouseEvent sets meta key
+		evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, true, 0, null);
+		a.dispatchEvent(evt);
 	}
 };   
