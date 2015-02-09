@@ -1,29 +1,40 @@
 var Controller = function(){
-	//this.hal = new Hal(this);
+	this.hal = new Hal(this);
+	this.widgets = {};
 };
 
 Controller.prototype.viewDidLoad = function() {
-	this.hal = new Hal(this);
-	this.addWidget('alarmClockWidget.html');
-	this.showBanner('Alarm Clock loaded');
+	this.showBanner('Welcome');
+	this.addWidget('start');
 }
 
-Controller.prototype.clearWidgets = function() {
+Controller.prototype.hideWidgets = function(exceptName) {
 	var canvas = document.getElementById('widgetCanvas');
 	var widgets = canvas.childNodes;
-	console.log(widgets);
 	for (var i = widgets.length - 1; i >= 0; i--) {
-		canvas.removeChild(widgets[i]);
+		var widget = widgets[i];
+		if (!widget.tagName || widget.tagName.toLowerCase() != 'iframe') continue;
+		if (!exceptName || widget != this.widgets[exceptName]) {
+			console.log("hiding: " + widget.src);
+			widget.style.height = '0px';
+		}
 	};
-	console.log('finished clearing');
 }
 
-Controller.prototype.addWidget = function(path) {
-	this.clearWidgets();
-	var canvas = document.getElementById('widgetCanvas');
-	var frame = document.createElement('iframe');
-	frame.src = path;
-	canvas.appendChild(frame);
+Controller.prototype.addWidget = function(name) {
+	this.hideWidgets(name);
+	var widget = this.widgets[name];
+	if (widget) {
+		widget.style.height = '100%';
+	} else {
+		console.log("New widget");
+		var path = name + 'Widget.html';
+		var canvas = document.getElementById('widgetCanvas');
+		var frame = document.createElement('iframe');
+		frame.src = path;
+		canvas.appendChild(frame);
+		this.widgets[name] = frame;
+	}
 }
 
 Controller.prototype.log = function(text) {
