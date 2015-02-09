@@ -5,7 +5,7 @@ var Controller = function(){
 
 Controller.prototype.viewDidLoad = function() {
 	this.showBanner('Welcome');
-	this.addWidget('start');
+	this.showWidget('start');
 }
 
 Controller.prototype.hideWidgets = function(exceptName) {
@@ -17,24 +17,51 @@ Controller.prototype.hideWidgets = function(exceptName) {
 		if (!exceptName || widget != this.widgets[exceptName]) {
 			console.log("hiding: " + widget.src);
 			widget.style.height = '0px';
+			widget.style.visibility = 'hidden';
 		}
 	};
+	if (this.spotifyRemoteController && exceptName != 'spotifyRemote') {
+		this.spotifyRemoteController.disconnect();
+	}
 }
 
-Controller.prototype.addWidget = function(name) {
+Controller.prototype.openAlarmClock = function() {
+	this.log("Opening Alarm Clock");
+	this.showWidget('alarmClock');
+}
+
+Controller.prototype.openSpotifyRemote = function() {
+	this.log("Opening Spotify Remote");
+	if (this.spotifyRemoteController) {
+		this.spotifyRemoteController.connect();
+	}
+	this.showWidget('spotifyRemote');
+}
+
+Controller.prototype.openMenu = function() {
+	this.log("Opening Menu");
+	this.showWidget('menu');
+}
+
+Controller.prototype.showWidget = function(name) {
 	this.hideWidgets(name);
 	var widget = this.widgets[name];
 	if (widget) {
 		widget.style.height = '100%';
+		widget.style.visibility = 'visible';
 	} else {
-		console.log("New widget");
-		var path = name + 'Widget.html';
-		var canvas = document.getElementById('widgetCanvas');
-		var frame = document.createElement('iframe');
-		frame.src = path;
-		canvas.appendChild(frame);
-		this.widgets[name] = frame;
+		this.addWidget(name);
 	}
+}
+
+Controller.prototype.addWidget = function(name) {
+	console.log("Add widget");
+	var path = name + 'Widget.html';
+	var canvas = document.getElementById('widgetCanvas');
+	var frame = document.createElement('iframe');
+	frame.src = path;
+	canvas.appendChild(frame);
+	this.widgets[name] = frame;
 }
 
 Controller.prototype.log = function(text) {

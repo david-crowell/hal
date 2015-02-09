@@ -9,14 +9,15 @@ StartController.prototype.viewDidLoad = function() {
 	} if (this.controller) {
 		this.controller.startController = this;
 		this.hal = this.controller.hal;
+		this.hal.start();
 	} else {
 		this.hal = new Hal(this);
+		this.hal.start();
 	}
 }
 
 StartController.prototype.start = function() {
-	console.log(this);
-	this.hal.start();
+	this.controller.openMenu();
 }
 
 var startController = new StartController();

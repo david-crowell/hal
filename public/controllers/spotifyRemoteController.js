@@ -9,9 +9,8 @@ var SpotifyRemoteController = function(host) {
 }
 
 SpotifyRemoteController.prototype.viewDidLoad =  function() {
-	this.setBackgroundVideo( { id: 'e4Is32W-ppk' } );
-	if (top.Controller) {
-		this.controller = top.Controller;
+	if (top.controller) {
+		this.controller = top.controller;
 		this.controller.spotifyRemoteController = this;
 		this.hal = this.controller.hal;
 	} else {
@@ -466,8 +465,8 @@ SpotifyRemoteController.prototype._createSpotifyLink = function(label, url, type
 	return el;
 };
 
-var thisController = new SpotifyRemoteController('http://localhost:3333');
-thisController.init(io);
+var spotifyRemoteController = new SpotifyRemoteController('http://localhost:3333');
+spotifyRemoteController.init(io);
 // $('document').ready(function() {
 // 	new SpotifyRemoteController().init(io);
 // });

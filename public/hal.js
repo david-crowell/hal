@@ -40,6 +40,7 @@ Hal.prototype.parseForCommand = function(text) {
 	if (this.startsWithName(text)) {
 		this.controller.log("Keyword found: " + text);
 		this.tryConfirm(text);
+		this.tryOpenWidget(text);
 		this.trySetAlarmFor(text);
 		this.trySnoozeAlarm(text);
 		this.tryStopAlarm(text);
@@ -86,7 +87,6 @@ Hal.prototype.fixNumberParsing = function(input) {
 Hal.prototype.tryConfirm = function(text) {
 	if (!(/confirm/.test(text))) return false;
 
-	this.controller.log("Parsing for confirmation: " + text);
 	if (text.split(' ').length > 5) {
 		//probably not right
 		return false;
@@ -98,6 +98,51 @@ Hal.prototype.tryConfirm = function(text) {
 		} else {
 			this.controller.log("null confirmation");
 		}
+	}
+}
+
+Hal.prototype.tryOpenWidget = function(text) {
+	if (!(/open/.test(text))) return false;
+
+	var openPhrase = /.* open .*/.exec(text)[0]; // should be 'hal open <app> <maybe other stuff>'
+	var openParts = openPhrase.split(' '); // ['hal','open','<app>','<maybe>','<other>','<stuff>']
+	var appNameParts = openParts.slice(2); // '12'
+	this.controller.log('Trying to open widget: ' + appNameParts);
+
+	if (tryMenu(appNameParts)) {
+		this.controller.openMenu();
+		return true;
+	} else if (trySpotifyRemote(appNameParts)) {
+		this.controller.openSpotifyRemote()
+		return true;
+	} else if (tryAlarmClock(appNameParts)) {
+		this.controller.openAlarmClock();
+		return true;
+	}
+	return false;
+
+	function trySpotifyRemote(appNameParts) {
+		if (appNameParts.length > 5) return false;
+		return appNameParts[0] in {
+			'spotify':true
+		}
+	}
+
+	function tryMenu(appNameParts) {
+		if (appNameParts.length > 5) return false;
+		return appNameParts[0] in {
+			'menu':true,
+			'many':true
+		}
+	}
+
+	function tryAlarmClock(appNameParts) {
+		if (appNameParts.length > 5) return false;
+		var matches = { 'alarm': true };
+		for (var i = 0; i < appNameParts.length; i++) {
+			if (appNameParts[i] in matches) return true;
+		};
+		return false;
 	}
 }
 
@@ -119,7 +164,6 @@ Hal.prototype.tryGoodEvening = function(text) {
 
 // AlarmClockWidget
 Hal.prototype.trySetAlarmFor = function(text) {
-	this.controller.log('Parsing for setting alarm: ' + text);
 	if (!(/set alarm for/.test(text))) return false;
 	if (!(/.* hour/.test(text))) return false;
 	if (!(/.* minute/.test(text))) return false;
@@ -148,7 +192,6 @@ Hal.prototype.trySetAlarmFor = function(text) {
 Hal.prototype.trySnoozeAlarm = function(text) {
 	if (!(/snooze alarm/.test(text)) && !(/news alarm/.test(text))) return false;
 
-	this.controller.log('Parsing for snooze: ' + text);
 	var minutes = 5;
 	if (/.* minute/.test(text)) {
 		var minutesParts = /.* minute/.exec(text)[0].split(' ');

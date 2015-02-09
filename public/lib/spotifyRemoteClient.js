@@ -26,6 +26,7 @@ SpotifyRemoteClient.prototype.connect = function() {
 };
 
 SpotifyRemoteClient.prototype.disconnect = function() {
+  console.log('Disconnecting from Spotify');
   this.socket.disconnect();
   this.socket.removeAllListeners();
 };
