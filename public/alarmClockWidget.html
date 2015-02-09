@@ -8,14 +8,14 @@
 	<script type="text/javascript" src="/controllers/alarmClockController.js"></script>
 	<link rel="stylesheet" href="stylesheets/alarmclock.css" />
 </head>
-<body onload="AlarmClockController.viewDidLoad();">
+<body onload="controller.viewDidLoad();">
 <div id="wrapper">
-	<button onclick="AlarmClockController.hal.start()">Good Morning, HAL</button>
+	<button onclick="controller.hal.start()">Good Morning, HAL</button>
 
 	<br />
 	<br />
 
-	<button onclick="AlarmClockController.snoozeAlarm();">SNOOZE</button>
+	<button onclick="controller.snoozeAlarm();">SNOOZE</button>
 
 	<form action="" method="">
 	<div id="alarmclock">
@@ -28,7 +28,7 @@
 	<br />
 	<br />
 
-	<button onclick="AlarmClockController.stopAlarm();">TURN OFF</button>
+	<button onclick="controller.stopAlarm();">TURN OFF</button>
 </div>
 </body>
 </html>
