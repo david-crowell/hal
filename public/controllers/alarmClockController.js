@@ -13,8 +13,8 @@ var AlarmClockController = {
 	},
 	viewDidLoad : function() {
 		this.setBackgroundVideo( { id: 'e4Is32W-ppk' } );
-		if (top.Controller) {
-			this.controller = top.Controller;
+		if (top.controller) {
+			this.controller = top.controller;
 			this.controller.alarmClockController = this;
 			this.hal = this.controller.hal;
 		} else {
