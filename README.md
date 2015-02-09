@@ -16,10 +16,11 @@ Almost.
 ## Installation
 
 1. Install [Node.js](http://nodejs.org/)
-2. Install the heroku toolbelt
-3. Clone the repo
-4. `npm install`
-5. `$ foreman start`
+2. Install npm
+3. Install the heroku toolbelt
+4. Clone the repo
+5. `npm install`
+6. `$ foreman start`
 
 ## Gotchas
 
@@ -32,7 +33,12 @@ Almost.
 ## Starting and using spotify-remote
 
 1. Make sure Spotify is running.
-2. Start the spotify-remote server in a shell:
+2. Install spotify-remote
+
+    ```
+    $ npm install -g spotify-remote
+    ```
+3. Start the spotify-remote server in a shell:
 
     ```
     $ spotify-remote
@@ -41,7 +47,7 @@ Almost.
 The client is expecting port 3333
 
 ```
-$ PORT=1337 spotify-remote
+$ PORT=3333 spotify-remote
 ```
 
 ## Credits
@@ -59,5 +65,4 @@ Everything?
 MIT
 
 [Spotify](http://www.spotify.com) is a registered trademark of Spotify Ltd.
-spotify-remote is in no way affiliated with Spotify, we're just a little
-tool sitting on top of the Spotify.app and their webservices.
+Hal and spotify-remote are in no way affiliated with Spotify
