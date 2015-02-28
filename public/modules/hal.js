@@ -280,8 +280,8 @@ Hal.prototype.tryPlay = function(text) {
 	if (!(/play/.test(text))) return false;
 	this.controller.log('Playing');
 
-	if (this.controller && this.controller.spotifyRemoteController && this.controller.spotifyRemoteController.client) {
-		this.controller.spotifyRemoteController.client.togglePlay();
+	if (this.controller) {
+		this.controller.toggleSpotifyPlay()
 	} else {
 		this.controller.log('Can\'t find spotify controller')
 	}
@@ -293,8 +293,8 @@ Hal.prototype.tryPause = function(text) {
 	if (!(/pause/.test(text)) && !(/paws/.test(text)) && !(/passé/.test(text))) return false;
 	this.controller.log('Pausing');
 
-	if (this.controller && this.controller.spotifyRemoteController && this.controller.spotifyRemoteController.client) {
-		this.controller.spotifyRemoteController.client.togglePlay();
+	if (this.controller) {
+		this.controller.toggleSpotifyPlay()
 	} else {
 		this.controller.log('Can\'t find spotify controller')
 	}

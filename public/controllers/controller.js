@@ -32,7 +32,7 @@ Controller.prototype.openAlarmClock = function() {
 
 Controller.prototype.openSpotifyRemote = function() {
 	this.log("Opening Spotify Remote");
-	if (this.spotifyRemoteController) {
+	if (this.spotifyRemoteController && !this.spotifyRemoteController.connected) {
 		this.spotifyRemoteController.connect();
 	}
 	this.showWidget('spotifyRemote');
@@ -109,6 +109,15 @@ Controller.prototype.clearAudio = function() {
 	if (this.audio) {
 		this.audio.pause();
 	}
+}
+
+Controller.prototype.toggleSpotifyPlay = function() {
+	if (this.spotifyRemoteController && this.spotifyRemoteController.client) {
+		if (!(this.spotifyRemoteController.client.connected)) {
+			this.spotifyRemoteController.client.connect();
+		}
+		this.controller.spotifyRemoteController.client.togglePlay();
+	} 
 }
 
 Controller.prototype.openInBackground = function(url){

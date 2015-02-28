@@ -2,6 +2,7 @@ var SpotifyRemoteClient = function(host) {
   console.log('host: ');console.log(host);
   this.host = host || window.location.hostname;
   console.log('host: ');console.log(this.host);
+  this.connected = false;
   return this;
 };
 
@@ -23,12 +24,14 @@ SpotifyRemoteClient.prototype.connect = function() {
   this.socket.on('currentTrack', this.showCurrentTrack.bind(this));
   this.socket.on('currentState', this.showCurrentState.bind(this));
   this.socket.on('currentArtwork', this.showCurrentArtwork.bind(this));
+  this.connected = true;
 };
 
 SpotifyRemoteClient.prototype.disconnect = function() {
   console.log('Disconnecting from Spotify');
   this.socket.disconnect();
   this.socket.removeAllListeners();
+  this.connected = false;
 };
 
 SpotifyRemoteClient.prototype.showCurrentTrack = function(track) {
