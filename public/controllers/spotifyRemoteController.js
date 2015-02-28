@@ -236,7 +236,8 @@ SpotifyRemoteController.prototype.forEach = function(obj, iterator, context) {
 	Array.prototype.forEach.call(obj, iterator, context);
 };
 
-SpotifyRemoteController.prototype.formatTime = function(totalSeconds) {
+SpotifyRemoteController.prototype.formatTime = function(floatSeconds) {
+	var totalSeconds = Math.floor( floatSeconds );
 	var minutes = Math.floor(totalSeconds / 60);
 	var seconds = totalSeconds % 60;
 

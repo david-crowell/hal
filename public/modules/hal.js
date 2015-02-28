@@ -39,11 +39,13 @@ Hal.prototype.parseForCommand = function(text) {
 	text = this.trimBeginningSpaces(text.toLowerCase());
 	if (this.startsWithName(text)) {
 		this.controller.log("Keyword found: " + text);
-		this.tryConfirm(text);
-		this.tryOpenWidget(text);
-		this.trySetAlarmFor(text);
-		this.trySnoozeAlarm(text);
-		this.tryStopAlarm(text);
+		if (this.tryConfirm(text)) return;
+		if (this.tryOpenWidget(text)) return;
+		if (this.trySetAlarmFor(text)) return;
+		if (this.trySnoozeAlarm(text)) return;
+		if (this.tryStopAlarm(text)) return;
+		if (this.tryPlay(text)) return;
+		if (this.tryPause(text)) return;
 	} else {
 		var savingThrow = this.tryGoodEvening(text);
 		savingThrow = savingThrow || this.tryStopAlarm(text);
@@ -56,7 +58,7 @@ Hal.prototype.parseForCommand = function(text) {
 Hal.prototype.startsWithName = function(text) {
 	var lower = text.toLowerCase();
 	var parts = lower.split(' ');
-	var matches = {'hal':1,'how':1,'jarvis':1};
+	var matches = {'hal':1,'how':1,'jarvis':1,'foul':1,'hal':1};
 	if (parts[0] in matches) {
 		return true;	
 	} else {
@@ -99,6 +101,7 @@ Hal.prototype.tryConfirm = function(text) {
 			this.controller.log("null confirmation");
 		}
 	}
+	return true;
 }
 
 Hal.prototype.tryOpenWidget = function(text) {
@@ -172,6 +175,7 @@ Hal.prototype.tryGoodEvening = function(text) {
 		if (this.controller) {
 			this.controller.playAudio("http://www.palantir.net/2001/tma1/wav/hihal.wav");
 		}
+		return true;
 	}
 }
 
@@ -267,6 +271,32 @@ Hal.prototype.tryStopAlarm = function(text) {
 		this.controller.alarmClockController.stopAlarm();
 	} else {
 		this.controller.log('Can\'t find stop alarm controllers')
+	}
+	return true;
+}
+
+// SpotifyRemoteWidget
+Hal.prototype.tryPlay = function(text) {
+	if (!(/play/.test(text))) return false;
+	this.controller.log('Playing');
+
+	if (this.controller && this.controller.spotifyRemoteController && this.controller.spotifyRemoteController.client) {
+		this.controller.spotifyRemoteController.client.togglePlay();
+	} else {
+		this.controller.log('Can\'t find spotify controller')
+	}
+	return true;
+}
+
+// SpotifyRemoteWidget
+Hal.prototype.tryPause = function(text) {
+	if (!(/pause/.test(text)) && !(/paws/.test(text)) && !(/passé/.test(text))) return false;
+	this.controller.log('Pausing');
+
+	if (this.controller && this.controller.spotifyRemoteController && this.controller.spotifyRemoteController.client) {
+		this.controller.spotifyRemoteController.client.togglePlay();
+	} else {
+		this.controller.log('Can\'t find spotify controller')
 	}
 	return true;
 }
