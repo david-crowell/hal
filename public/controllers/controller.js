@@ -61,7 +61,7 @@ Controller.prototype.showWidget = function(name) {
 
 Controller.prototype.addWidget = function(name) {
 	console.log("Add widget");
-	var path = name + 'Widget.html';
+	var path = 'widgets/' + name + 'Widget.html';
 	var canvas = document.getElementById('widgetCanvas');
 	var frame = document.createElement('iframe');
 	frame.src = path;

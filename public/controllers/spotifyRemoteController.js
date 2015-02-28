@@ -35,7 +35,9 @@ SpotifyRemoteController.prototype.connect = function() {
 };
 
 SpotifyRemoteController.prototype.disconnect = function() {
-	this.client.disconnect();
+	if (this.client) {
+		this.client.disconnect();
+	}
 };
 
 SpotifyRemoteController.prototype.bindDOMEvents = function() {
