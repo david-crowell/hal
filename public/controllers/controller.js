@@ -43,6 +43,11 @@ Controller.prototype.openMenu = function() {
 	this.showWidget('menu');
 }
 
+Controller.prototype.openSpace = function() {
+	this.log("Opening Space");
+	this.showWidget('space');
+}
+
 Controller.prototype.showWidget = function(name) {
 	this.hideWidgets(name);
 	var widget = this.widgets[name];

@@ -107,6 +107,9 @@ Hal.prototype.tryOpenWidget = function(text) {
 	var openPhrase = /.* open .*/.exec(text)[0]; // should be 'hal open <app> <maybe other stuff>'
 	var openParts = openPhrase.split(' '); // ['hal','open','<app>','<maybe>','<other>','<stuff>']
 	var appNameParts = openParts.slice(2); // '12'
+	if (appNameParts[0] == 'open') {
+		appNameParts = appNameParts.slice(1);
+	}
 	this.controller.log('Trying to open widget: ' + appNameParts);
 
 	if (tryMenu(appNameParts)) {
@@ -117,6 +120,9 @@ Hal.prototype.tryOpenWidget = function(text) {
 		return true;
 	} else if (tryAlarmClock(appNameParts)) {
 		this.controller.openAlarmClock();
+		return true;
+	} else if (trySpace(appNameParts)) {
+		this.controller.openSpace();
 		return true;
 	}
 	return false;
@@ -143,6 +149,13 @@ Hal.prototype.tryOpenWidget = function(text) {
 			if (appNameParts[i] in matches) return true;
 		};
 		return false;
+	}
+
+	function trySpace(appNameParts) {
+		if (appNameParts.length > 5) return false;
+		return appNameParts[0] in {
+			'space':true
+		}
 	}
 }
 
