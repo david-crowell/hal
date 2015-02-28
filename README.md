@@ -1,12 +1,13 @@
-# Hal — Your home automator, alarm clock, and eventual cause of dearth
+# Hal — Your home automator, alarm clock, and eventual cause of death
 
 ## What?
 
 Ok, it's got a speech recognition engine running in the background at all 
 times, and a few other widgets you can load in. Widgets currently include
 
-1. Alarm clock
-2. Spotify controller
+1. Alarm Clock
+2. Spotify Remote - controller for spotify on your machine
+3. Space - stream from the ISS
 
 Hit the website, click a button to enable microphone use, and you're good to go.
 (Only tested with Chrome on OSX)
